@@ -21,10 +21,19 @@ const DEMOS: Demo[] = [
   },
   {
     id: 'beat_it',
-    label: 'Beat It — Michael Jackson',
+    label: 'Beat It — old (osu!standard)',
     osu: '/fixtures/beat_it.osu',
     audio: '/fixtures/beat_it.mp3',
     analysis: '/fixtures/beat_it.maimod.json',
+  },
+  {
+    // Regenerated with today's pipeline: osu!mania 5K + mania_ln long-note pass.
+    // Same beat_it.mp3 cut as the old standard demo, so old vs. new line up.
+    id: 'beat_it_mania',
+    label: 'Beat It — NEW (mania 5K + LN)',
+    osu: '/fixtures/beat_it_mania_N.osu',
+    audio: '/fixtures/beat_it.mp3',
+    analysis: '',
   },
 ]
 

@@ -36,16 +36,26 @@ function drawField(cv: HTMLCanvasElement, notes: DiffNote[], t: number, color: s
   ctx.lineWidth = 1
 
   for (const n of notes) {
-    if (n.time < t - 0.25 || n.time > t + lookahead + 0.1) continue
+    const tail = n.end ?? n.time
+    // keep a hold visible until its tail passes the judgment line
+    if (tail < t - 0.25 || n.time > t + lookahead + 0.1) continue
     const cx = (n.lane - 0.5) * lw
     const y = yOf(n.time)
-    const fade = t > n.time ? Math.max(0, 1 - (t - n.time) / 0.18) : 1
+    const fade = t > tail ? Math.max(0, 1 - (t - tail) / 0.18) : 1
     if (fade <= 0) continue
     ctx.globalAlpha = fade
     const w = lw * 0.56
     if (n.strong) { ctx.shadowColor = '#f59e0b'; ctx.shadowBlur = 12; ctx.fillStyle = '#f59e0b' }
     else { ctx.shadowBlur = 0; ctx.fillStyle = color }
-    ctx.beginPath(); ctx.roundRect(cx - w / 2, y - 8, w, 16, 5); ctx.fill()
+    if (n.end != null) {
+      // hold bar: tail (higher, later time) down to head; rounded body + head cap
+      const yTail = yOf(n.end)
+      const top = Math.min(y, yTail)
+      const h = Math.max(16, Math.abs(y - yTail) + 16)
+      ctx.beginPath(); ctx.roundRect(cx - w / 2, top - 8, w, h, 5); ctx.fill()
+    } else {
+      ctx.beginPath(); ctx.roundRect(cx - w / 2, y - 8, w, 16, 5); ctx.fill()
+    }
     ctx.shadowBlur = 0; ctx.globalAlpha = 1
   }
 }
@@ -67,7 +77,9 @@ export default function GameplayGridView({ matrix, diffs, duration }: { matrix: 
     const a = new Audio(AUDIO_SOURCES[0].src); a.preload = 'auto'; audioRef.current = a
   }
 
-  const notesFor = (s: Source, l: Level): DiffNote[] => matrix[s]?.[l] ?? (s === 'orig' ? diffs[l] : [])
+  // 'orig' uses diffs (mania E/N/H when loaded, else orig-stem/BH fallback);
+  // the per-stem sources use their own matrix maps.
+  const notesFor = (s: Source, l: Level): DiffNote[] => (s === 'orig' ? diffs[l] : matrix[s]?.[l]) ?? []
 
   // ordered list of visible (source, level) fields
   const fields: { s: Source; l: Level }[] = []

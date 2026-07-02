@@ -97,6 +97,19 @@ function parseHit(line: string): HitObject {
   const type = +p[3]
   const newCombo = (type & 4) !== 0
 
+  if (type & 128) {
+    // osu!mania hold / long note: x,y,time,128,hitSound,endTime:hitSample
+    // The mania hold bit (128) never collides with the standard slider(2)/
+    // spinner(8) bits, so this branch is inert for osu!standard maps. Rendered
+    // as a hold bar (kind 'slider') by LaneView; x encodes the column, which
+    // laneOf() maps to a lane exactly as for a normal note.
+    const endTime = parseInt((p[5] ?? '').split(':')[0], 10)
+    return {
+      x, y, time, kind: 'slider', newCombo,
+      endTime: Number.isFinite(endTime) ? endTime : time,
+      points: [{ x, y }],
+    }
+  }
   if (type & 2) {
     // slider: x,y,time,type,hitSound,curve|p1|p2..,slides,length,...
     const curve = (p[5] ?? '').split('|')

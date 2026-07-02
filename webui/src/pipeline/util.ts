@@ -2,7 +2,7 @@ import { parseOsu } from '../osu/parseOsu'
 import { laneOf } from '../lib/lanes'
 import { BHChart, FieldNote, Section } from './types'
 
-export interface DiffNote { time: number; lane: number; strong: boolean } // time in s, lane 1..5
+export interface DiffNote { time: number; lane: number; strong: boolean; end?: number } // times in s (end set for holds/LNs), lane 1..5
 export interface Diffs { E: DiffNote[]; N: DiffNote[]; H: DiffNote[] }
 
 // 3×5 map matrix: maps[source][level] = notes. source ∈ orig|vocals|drums|bass|other, level ∈ E|N|H.
@@ -47,7 +47,10 @@ export function combineByStem(
 // Derive 3 difficulty note-sets from one BH chart (demo proxy).
 export function deriveDiffsFromBH(notes: BHChart['notes']): Diffs {
   const play = notes.filter((n) => n.lane >= 1 && n.lane <= 5)
-  const toN = (arr: typeof play): DiffNote[] => arr.map((n) => ({ time: n.time, lane: n.lane, strong: n.variant === 'strong' }))
+  const endOf = (n: BHChart['notes'][number]): number | undefined =>
+    n.type === 'long' && n.controls?.length ? n.controls[n.controls.length - 1].time : undefined
+  const toN = (arr: typeof play): DiffNote[] =>
+    arr.map((n) => ({ time: n.time, lane: n.lane, strong: n.variant === 'strong', end: endOf(n) }))
   return {
     E: toN(play.filter((n) => n.variant === 'strong')),
     N: toN(play.filter((n, i) => n.variant === 'strong' || i % 2 === 0)),
@@ -58,7 +61,13 @@ export function deriveDiffsFromBH(notes: BHChart['notes']): Diffs {
 // Parse a generated .osu chart into 5-lane (BH-style) difficulty notes; lane from osu x.
 export function osuToDiffNotes(osuText: string): DiffNote[] {
   const bm = parseOsu(osuText)
-  return bm.hitObjects.map((o) => ({ time: o.time / 1000, lane: laneOf(o.x), strong: false }))
+  return bm.hitObjects.map((o) => ({
+    time: o.time / 1000,
+    lane: laneOf(o.x),
+    strong: false,
+    // sliders (std) and mania holds (type 128) carry endTime > time → hold bar.
+    end: o.endTime > o.time ? o.endTime / 1000 : undefined,
+  }))
 }
 
 // Section label → color (matches the slide palette).

@@ -16,6 +16,18 @@ const DIFF_NAME: Record<Diff, string> = { E: 'Easy', N: 'Normal', H: 'Hard' }
 const ZOOMS = [1, 2, 4, 8]
 const NL = 5 // BH play lanes (1 top → 5 bottom)
 
+// Draw one note in a density row: a thin tick, or a hold bar when xEnd is set.
+// xEnd may be to the right of x (time flows left→right here); short holds clamp
+// to a visible minimum so 1/4-beat LNs don't vanish.
+function drawNote(ctx: CanvasRenderingContext2D, x: number, xEnd: number | null, y: number, laneH: number) {
+  if (xEnd != null && xEnd > x) {
+    const w = Math.max(2.5, xEnd - x)
+    ctx.fillRect(x, y - laneH * 0.3, w, laneH * 0.6)
+  } else {
+    ctx.fillRect(x, y - laneH * 0.36, 1.8, laneH * 0.72)
+  }
+}
+
 function drawLanes(ctx: CanvasRenderingContext2D, W: number, H: number) {
   ctx.strokeStyle = 'rgba(255,255,255,.06)'
   ctx.lineWidth = 1
@@ -119,10 +131,10 @@ export default function MergeView({ diffs, sections, duration, real }: Props) {
 
   // The actual merged chart: each segment contributes its difficulty's notes.
   const merged = useMemo(() => {
-    const out: { time: number; lane: number; diff: Diff; strong: boolean }[] = []
+    const out: { time: number; lane: number; diff: Diff; strong: boolean; end?: number }[] = []
     const b = [0, ...boundaries, duration]
     pattern.forEach((d, i) => {
-      for (const n of diffs[d]) if (n.time >= b[i] && n.time < b[i + 1]) out.push({ time: n.time, lane: n.lane, diff: d, strong: n.strong })
+      for (const n of diffs[d]) if (n.time >= b[i] && n.time < b[i + 1]) out.push({ time: n.time, lane: n.lane, diff: d, strong: n.strong, end: n.end })
     })
     return out.sort((a, c) => a.time - c.time)
   }, [diffs, pattern, boundaries, duration])
@@ -183,7 +195,7 @@ export default function MergeView({ diffs, sections, duration, real }: Props) {
         if (x < -1 || x > W + 1) continue
         const y = ((n.lane - 0.5) / NL) * H // lane 1 → top
         ctx.globalAlpha = n.strong ? 1 : 0.78
-        ctx.fillRect(x, y - laneH * 0.36, 1.8, laneH * 0.72)
+        drawNote(ctx, x, n.end != null ? X(n.end) : null, y, laneH)
       }
       ctx.globalAlpha = 1
     })
@@ -222,7 +234,7 @@ export default function MergeView({ diffs, sections, duration, real }: Props) {
       const y = ((n.lane - 0.5) / NL) * H
       ctx.fillStyle = DIFF_COL[n.diff]
       ctx.globalAlpha = n.strong ? 1 : 0.82
-      ctx.fillRect(x, y - laneH * 0.36, 1.8, laneH * 0.72)
+      drawNote(ctx, x, n.end != null ? X(n.end) : null, y, laneH)
     }
     ctx.globalAlpha = 1
   }, [merged, pattern, boundaries, duration, vs, viewLen])
