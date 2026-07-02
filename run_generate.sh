@@ -70,7 +70,13 @@ OSU="$OUT_DIR/$SLUG.osu"
 [ "$RAW" = "$OSU" ] || mv "$RAW" "$OSU"
 echo "   ✅ raw .osu: $OSU"
 
-echo; echo "── Stage 1.5: mania long notes ($TIER tier, target LN $LNT) ──"
+echo; echo "── Stage 1.5: density cap ($TIER tier) ──"
+# Star rating over-packs 1/4 streams; cap notes/s to the tier target, thinning
+# the finest subdivisions + chord-extras first (keeps the on-beat pulse + holds).
+# Runs BEFORE the LN pass so LN% (which only flips note types) stays exact.
+$PY osu_thin.py "$OSU" --difficulty "$DIFF" -o "$OSU"
+
+echo; echo "── Stage 1.6: mania long notes ($TIER tier, target LN $LNT) ──"
 # hold_note_ratio only turns LNs on; this pass sets the exact per-tier LN% by
 # converting the most-sustained taps to holds (HPSS harmonic energy).
 $PY mania_ln.py "$OSU" --audio "$AUDIO" --target "$LNT" -o "$OSU"

@@ -27,6 +27,7 @@ import osu_diffusion.config as _reg_diff  # noqa: F401
 import inference as I
 import osu_timing
 import mania_ln
+import osu_thin
 
 REPO = Path(__file__).resolve().parent.parent
 CONFIG_DIR = str(REPO / "configs" / "inference")
@@ -153,6 +154,18 @@ class Engine:
         if os.path.abspath(raw_path) != os.path.abspath(raw_osu):
             os.replace(raw_path, raw_osu)
 
+        # density cap: thin notes/s to the tier target FIRST, so the game chart
+        # isn't a frantic 1/4 stream. Runs before the LN pass because osu_thin
+        # sets the note *count* while mania_ln only flips note *types* — so both
+        # the density and LN% targets hold on the final map.
+        thin_info = {}
+        try:
+            thin_info = osu_thin.apply_density_cap(
+                raw_osu, osu_thin.tier_for(float(difficulty))["target_nps"],
+                out_path=raw_osu, verbose=False)
+        except Exception as e:  # never fail a job on a post-process
+            thin_info = {"thin_error": f"{type(e).__name__}: {e}"}
+
         # mania LN post-process: enforce the exact per-tier LN% on the raw map
         # (before timing fix, which only touches [TimingPoints]).
         ln_info = {}
@@ -172,6 +185,7 @@ class Engine:
             "raw_osu": raw_osu,
             "fixed_osu": fixed_osu,
             "tier": tier["name"],
+            "thin": thin_info,
             "ln": ln_info,
             **fix_info,
         }
