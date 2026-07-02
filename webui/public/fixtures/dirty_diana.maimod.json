@@ -1,0 +1,568 @@
+{
+  "beatmap_path": "/Users/haonguyen/Works/Workspace/Mapperatorinator/mapperatorinator-output/api/dirty_diana/dirty_diana_fixed.osu",
+  "audio_path": "/tmp/dirty_diana_aligned.mp3",
+  "mode": 0,
+  "title": "Dirty Diana",
+  "artist": "Michael Jackson",
+  "version": "Mapperatorinator V32-mini",
+  "count": 22,
+  "categories": [
+    "Compose",
+    "Hit Sounds",
+    "Misc",
+    "Rhythm",
+    "Timing"
+  ],
+  "suggestions": [
+    {
+      "category": "Misc",
+      "time": 687,
+      "timestamp_time": 687,
+      "combo_index": 1,
+      "surprisal": 223.3991241455078,
+      "importance": 22,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "None",
+      "x": 48,
+      "y": 56,
+      "actual": {
+        "type": "dist",
+        "value": 72,
+        "str": "72"
+      },
+      "expected": {
+        "type": "spinner",
+        "value": 0,
+        "str": "spinner0"
+      },
+      "explanation": "Expected Spinner spinner0 instead of Dist 72."
+    },
+    {
+      "category": "Timing",
+      "time": 1370,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 79.89785766601562,
+      "importance": 8,
+      "context_type": "map",
+      "group_type": "measure",
+      "group_str": "Measure",
+      "previous_group_str": "Slider End",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Unexpected new measure."
+    },
+    {
+      "category": "Timing",
+      "time": 2739,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 22.476665496826172,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "beat",
+      "group_str": "Beat",
+      "previous_group_str": "Slider End",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "expected": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "explanation": "Expected new measure."
+    },
+    {
+      "category": "Compose",
+      "time": 3881,
+      "timestamp_time": 3881,
+      "combo_index": 2,
+      "surprisal": 21.654512405395508,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Slider End",
+      "x": 87,
+      "y": 23,
+      "actual": {
+        "type": "pos_y",
+        "value": 23,
+        "str": "y:92"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 22,
+        "str": "y:88"
+      },
+      "explanation": "Expected position y:88 instead of y:92."
+    },
+    {
+      "category": "Rhythm",
+      "time": 7534,
+      "timestamp_time": 7534,
+      "combo_index": 3,
+      "surprisal": 105.85957336425781,
+      "importance": 11,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 110,
+      "y": 36,
+      "actual": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "expected": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "explanation": "Expected a Slider Head instead of a Circle."
+    },
+    {
+      "category": "Rhythm",
+      "time": 12328,
+      "timestamp_time": 12328,
+      "combo_index": 1,
+      "surprisal": 30.307586669921875,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Slider End",
+      "x": 89,
+      "y": 75,
+      "actual": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "expected": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "explanation": "Expected a Slider Head instead of a Circle."
+    },
+    {
+      "category": "Rhythm",
+      "time": 16209,
+      "timestamp_time": 15981,
+      "combo_index": 1,
+      "surprisal": 70.88294982910156,
+      "importance": 7,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Slider Repeat #1",
+      "previous_group_str": "Perfect Anchor #2",
+      "x": 70,
+      "y": 89,
+      "actual": {
+        "type": "hitsound",
+        "value": 33,
+        "str": "soft:soft-whistle"
+      },
+      "expected": {
+        "type": "last_anchor",
+        "value": 0,
+        "str": "last_anchor0"
+      },
+      "explanation": "Expected end of slider repeats."
+    },
+    {
+      "category": "Rhythm",
+      "time": 18379,
+      "timestamp_time": 18379,
+      "combo_index": 2,
+      "surprisal": 461.8333740234375,
+      "importance": 46,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Slider End",
+      "x": 44,
+      "y": 54,
+      "actual": {
+        "type": "snap",
+        "value": 4,
+        "str": "1/4"
+      },
+      "expected": {
+        "type": "snap",
+        "value": 2,
+        "str": "1/2"
+      },
+      "explanation": "Expected snapping 1/2 instead of 1/4."
+    },
+    {
+      "category": "Timing",
+      "time": 23630,
+      "timestamp_time": 23630,
+      "combo_index": 2,
+      "surprisal": 107.36439514160156,
+      "importance": 11,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Slider End",
+      "x": 47,
+      "y": 81,
+      "actual": {
+        "type": "snap",
+        "value": 4,
+        "str": "1/4"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Hit object likely not snapped to a beat."
+    },
+    {
+      "category": "Rhythm",
+      "time": 23858,
+      "timestamp_time": 23630,
+      "combo_index": 2,
+      "surprisal": 283.4903564453125,
+      "importance": 28,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Last Anchor",
+      "previous_group_str": "Perfect Anchor #2",
+      "x": 48,
+      "y": 83,
+      "actual": {
+        "type": "snap",
+        "value": 4,
+        "str": "1/4"
+      },
+      "expected": {
+        "type": "snap",
+        "value": 2,
+        "str": "1/2"
+      },
+      "explanation": "Expected snapping 1/2 instead of 1/4."
+    },
+    {
+      "category": "Rhythm",
+      "time": 24315,
+      "timestamp_time": 23972,
+      "combo_index": 3,
+      "surprisal": 56.56710433959961,
+      "importance": 6,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Last Anchor",
+      "previous_group_str": "Perfect Anchor #2",
+      "x": 75,
+      "y": 49,
+      "actual": {
+        "type": "snap",
+        "value": 4,
+        "str": "1/4"
+      },
+      "expected": {
+        "type": "snap",
+        "value": 2,
+        "str": "1/2"
+      },
+      "explanation": "Expected snapping 1/2 instead of 1/4."
+    },
+    {
+      "category": "Rhythm",
+      "time": 24885,
+      "timestamp_time": 24885,
+      "combo_index": 6,
+      "surprisal": 23.887039184570312,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 79,
+      "y": 10,
+      "actual": {
+        "type": "snap",
+        "value": 2,
+        "str": "1/2"
+      },
+      "expected": {
+        "type": "snap",
+        "value": 4,
+        "str": "1/4"
+      },
+      "explanation": "Expected snapping 1/4 instead of 1/2."
+    },
+    {
+      "category": "Rhythm",
+      "time": 29337,
+      "timestamp_time": 28995,
+      "combo_index": 2,
+      "surprisal": 23.479211807250977,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Slider Repeat #1",
+      "previous_group_str": "Perfect Anchor #2",
+      "x": 70,
+      "y": 75,
+      "actual": {
+        "type": "hitsound",
+        "value": 33,
+        "str": "soft:soft-whistle"
+      },
+      "expected": {
+        "type": "last_anchor",
+        "value": 0,
+        "str": "last_anchor0"
+      },
+      "explanation": "Expected end of slider repeats."
+    },
+    {
+      "category": "Rhythm",
+      "time": 30368,
+      "timestamp_time": 30148,
+      "combo_index": 4,
+      "surprisal": 22.81269073486328,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "slider_end",
+      "group_str": "Slider End",
+      "previous_group_str": "Last Anchor",
+      "x": 81,
+      "y": 30,
+      "actual": {
+        "type": "t",
+        "value": 30368,
+        "str": "00:30:368"
+      },
+      "expected": {
+        "type": "t",
+        "value": 30383,
+        "str": "00:30:383"
+      },
+      "explanation": "Expected object at 00:30:383 instead of 00:30:368."
+    },
+    {
+      "category": "Rhythm",
+      "time": 34481,
+      "timestamp_time": 34481,
+      "combo_index": 2,
+      "surprisal": 54.06971740722656,
+      "importance": 5,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 78,
+      "y": 37,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Hit Sounds",
+      "time": 45217,
+      "timestamp_time": 45217,
+      "combo_index": 1,
+      "surprisal": 188.8822784423828,
+      "importance": 19,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 23,
+      "y": 19,
+      "actual": {
+        "type": "volume",
+        "value": 80,
+        "str": "80%"
+      },
+      "expected": {
+        "type": "volume",
+        "value": 60,
+        "str": "60%"
+      },
+      "explanation": "Expected volume 60% instead of 80%."
+    },
+    {
+      "category": "Hit Sounds",
+      "time": 53442,
+      "timestamp_time": 53442,
+      "combo_index": 1,
+      "surprisal": 86.19867706298828,
+      "importance": 9,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Slider End",
+      "x": 110,
+      "y": 53,
+      "actual": {
+        "type": "hitsound",
+        "value": 35,
+        "str": "soft:soft-whistle:finish"
+      },
+      "expected": {
+        "type": "hitsound",
+        "value": 34,
+        "str": "soft:soft-finish"
+      },
+      "explanation": "Expected hitsound soft:soft-finish instead of soft:soft-whistle:finish."
+    },
+    {
+      "category": "Compose",
+      "time": 55499,
+      "timestamp_time": 55499,
+      "combo_index": 2,
+      "surprisal": 74.23722076416016,
+      "importance": 7,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 18,
+      "y": 46,
+      "actual": {
+        "type": "pos_y",
+        "value": 46,
+        "str": "y:184"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 45,
+        "str": "y:180"
+      },
+      "explanation": "Expected position y:180 instead of y:184."
+    },
+    {
+      "category": "Rhythm",
+      "time": 61211,
+      "timestamp_time": 61211,
+      "combo_index": 3,
+      "surprisal": 24.993467330932617,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 85,
+      "y": 50,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Compose",
+      "time": 79261,
+      "timestamp_time": 79261,
+      "combo_index": 2,
+      "surprisal": 21.20253562927246,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 44,
+      "y": 41,
+      "actual": {
+        "type": "pos_y",
+        "value": 41,
+        "str": "y:164"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 40,
+        "str": "y:160"
+      },
+      "explanation": "Expected position y:160 instead of y:164."
+    },
+    {
+      "category": "Compose",
+      "time": 87487,
+      "timestamp_time": 87487,
+      "combo_index": 3,
+      "surprisal": 66.48880767822266,
+      "importance": 7,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 86,
+      "y": 28,
+      "actual": {
+        "type": "dist",
+        "value": 88,
+        "str": "88"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 0,
+        "str": "0"
+      },
+      "explanation": "Expected distance 0 to the previous Circle instead of 88."
+    },
+    {
+      "category": "Hit Sounds",
+      "time": 89086,
+      "timestamp_time": 89086,
+      "combo_index": 1,
+      "surprisal": 369.73968505859375,
+      "importance": 37,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 64,
+      "y": 16,
+      "actual": {
+        "type": "volume",
+        "value": 5,
+        "str": "5%"
+      },
+      "expected": {
+        "type": "volume",
+        "value": 80,
+        "str": "80%"
+      },
+      "explanation": "Expected volume 80% instead of 5%."
+    }
+  ]
+}

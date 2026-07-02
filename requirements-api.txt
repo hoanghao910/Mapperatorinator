@@ -1,0 +1,6 @@
+# Extra deps for the generation API (api/server.py). Install into the same .venv:
+#   .venv/bin/python -m pip install -r requirements-api.txt
+# (the client in game_content_tools needs only `requests`, already common there)
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9

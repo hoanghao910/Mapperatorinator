@@ -11,3 +11,17 @@ test_inference_mai_mod.py
 *.lck
 .env
 .vscode
+.DS_Store
+
+# Local generation output artifacts (large, machine-local)
+mapperatorinator-output/
+
+# Editor/backup files
+*.backup
+
+# webui build & deps
+webui/node_modules/
+webui/dist/
+
+# webui demo audio (large binaries; regenerate/download locally)
+webui/public/fixtures/**/*.mp3

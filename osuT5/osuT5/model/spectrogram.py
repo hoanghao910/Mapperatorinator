@@ -35,30 +35,36 @@ class MelSpectrogram(nn.Module):
         assert implementation in ["torchaudio", "nnAudio"], f"Unsupported implementation: {implementation}"
         self.log_scale = log_scale
 
-        if implementation == "torchaudio":
-            import torchaudio.transforms
-            self.transform = torchaudio.transforms.MelSpectrogram(
-                sample_rate=sample_rate,
-                n_fft=n_ftt,
-                n_mels=n_mels,
-                hop_length=hop_length,
-                center=True,
-                f_min=f_min,
-                f_max=f_max,
-                pad_mode=pad_mode,
-            )
-        elif implementation == "nnAudio":
-            from nnAudio import features
-            self.transform = features.MelSpectrogram(
-                sr=sample_rate,
-                n_fft=n_ftt,
-                n_mels=n_mels,
-                hop_length=hop_length,
-                center=True,
-                fmin=f_min,
-                fmax=f_max,
-                pad_mode=pad_mode,
-            )
+        # Build the transform on a real device. transformers>=5 initializes the
+        # model under a "meta" device, but torchaudio's MelSpectrogram constructor
+        # calls .item() on its filterbank buffer, which fails on meta tensors. The
+        # mel filterbank is computed (not loaded from the checkpoint), so forcing
+        # CPU here is safe — it moves with the model on the later .to(device).
+        with torch.device("cpu"):
+            if implementation == "torchaudio":
+                import torchaudio.transforms
+                self.transform = torchaudio.transforms.MelSpectrogram(
+                    sample_rate=sample_rate,
+                    n_fft=n_ftt,
+                    n_mels=n_mels,
+                    hop_length=hop_length,
+                    center=True,
+                    f_min=f_min,
+                    f_max=f_max,
+                    pad_mode=pad_mode,
+                )
+            elif implementation == "nnAudio":
+                from nnAudio import features
+                self.transform = features.MelSpectrogram(
+                    sr=sample_rate,
+                    n_fft=n_ftt,
+                    n_mels=n_mels,
+                    hop_length=hop_length,
+                    center=True,
+                    fmin=f_min,
+                    fmax=f_max,
+                    pad_mode=pad_mode,
+                )
 
     def forward(self, samples: torch.Tensor) -> torch.Tensor:
         """

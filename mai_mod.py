@@ -1,3 +1,5 @@
+import json
+import re
 from dataclasses import dataclass
 from datetime import timedelta
 from pathlib import Path
@@ -74,6 +76,29 @@ def type_to_str(event_type: EventType) -> str:
     return event_type.value.replace("_", " ").title()
 
 
+def _enum_str(e) -> str | None:
+    """Stringify an EventType/ContextType enum (or None) for JSON."""
+    if e is None:
+        return None
+    return getattr(e, "value", None) or getattr(e, "name", None) or str(e)
+
+
+def _strip_markup(s) -> str:
+    """Remove Rich console markup (e.g. [link=..]..[/link], [bold red]) for clean JSON."""
+    return re.sub(r"\[/?[a-z][^\]]*\]", "", str(s))
+
+
+def _num(v):
+    """Coerce a numpy/None numeric to a plain JSON-safe python number."""
+    if v is None:
+        return None
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return int(f) if f.is_integer() else f
+
+
 def ai_mod(
         args: MaiModConfig,
         *,
@@ -110,6 +135,8 @@ def ai_mod(
         sequences=sequences,
         generation_config=generation_config,
         beatmap_path=beatmap_path,
+        in_context=i_args.in_context,
+        out_context=i_args.output_type,
         verbose=verbose,
     )
 
@@ -259,6 +286,7 @@ def ai_mod(
             return f"    ({surprisal:.0f})"
 
     suggestions_by_category = {}
+    records = []  # structured findings for the web visualizer (json_output)
 
     for s in suggestions:
         if i_args.train.data.add_timing and s.event.type == EventType.TIME_SHIFT and s.expected_event.type == EventType.TIME_SHIFT and s.group.event_type not in timing_types and s.next_beat_group and abs(s.expected_event.value - s.next_beat_group.time) <= 10:
@@ -316,6 +344,44 @@ def ai_mod(
         if category not in suggestions_by_category:
             suggestions_by_category[category] = []
         suggestions_by_category[category].append(f"{surprisal_text(s.surprisal)} {timestamp_text(s)} ({s.group_str}) - {explanation}")
+
+        records.append({
+            "category": category,
+            "time": _num(s.time),
+            "timestamp_time": _num(s.timestamp_time),
+            "combo_index": s.combo_index,
+            "surprisal": _num(s.surprisal),
+            "importance": _num(round(float(s.surprisal) / 10.0)),  # the (value) shown in the text UI
+            "context_type": _enum_str(s.context_type),
+            "group_type": _enum_str(s.group.event_type),
+            "group_str": s.group_str,
+            "previous_group_str": s.previous_group_str,
+            "x": _num(s.group.x),
+            "y": _num(s.group.y),
+            "actual": {"type": _enum_str(s.event.type), "value": _num(s.event.value), "str": _strip_markup(s.event_str)},
+            "expected": {"type": _enum_str(s.expected_event.type), "value": _num(s.expected_event.value), "str": _strip_markup(s.expected_event_str)},
+            "explanation": _strip_markup(explanation),
+        })
+
+    # Structured JSON output for the web visualizer (no top-10-per-category truncation)
+    if args.json_output:
+        out = {
+            "beatmap_path": str(beatmap_path),
+            "audio_path": str(audio_path),
+            "mode": int(beatmap.mode),
+            "title": beatmap.title,
+            "artist": beatmap.artist,
+            "version": beatmap.version,
+            "count": len(records),
+            "categories": sorted(suggestions_by_category.keys()),
+            "suggestions": records,
+        }
+        json_path = args.json_output_path or str(Path(beatmap_path).with_suffix(".maimod.json"))
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=2)
+        print(f"MAIMOD_JSON:{json_path}")
+        print(f"Found {len(records)} suggestions.")
+        return out
 
     # Print the suggestions by category
     console = Console(width=900)

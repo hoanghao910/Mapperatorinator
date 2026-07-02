@@ -150,6 +150,8 @@ class MaiModConfig:
     beatmap_path: str = ''  # Path to .osu file
     audio_path: str = ''  # Path to input audio
     raw_output: bool = False
+    json_output: bool = False       # Emit findings as structured JSON (for the web visualizer)
+    json_output_path: str = ''      # Where to write the JSON (default: <beatmap>.maimod.json)
     precision: str = 'fp32'         # Lower precision for speed (fp32/bf16/amp)
     inference: InferenceConfig = field(default_factory=InferenceConfig)  # Training settings for osuT5 model
     hydra: Any = MISSING

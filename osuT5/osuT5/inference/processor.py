@@ -417,9 +417,16 @@ class Processor(object):
             sequences: tuple[torch.Tensor, torch.Tensor, float],
             generation_config: GenerationConfig,
             beatmap_path: Optional[str] = None,
+            in_context: Optional[list[ContextType]] = None,
+            out_context: Optional[list[ContextType]] = None,
             verbose: bool = True,
     ):
+        # Mirror the generate() path: request the configured contexts so a viable
+        # template can be resolved. Without an out_context the template lookup
+        # yields an empty requested set and crashes in _get_viable_template.
         gen_in_context, gen_out_context, req_special_tokens = self._get_viable_template(
+            in_context=in_context,
+            out_context=out_context or [ContextType.MAP],
             gamemode=generation_config.gamemode,
         )
 

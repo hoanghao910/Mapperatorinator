@@ -1,0 +1,1093 @@
+{
+  "beatmap_path": "/Users/haonguyen/Works/Workspace/Mapperatorinator/mapperatorinator-output/api/beat_it/beat_it_fixed.osu",
+  "audio_path": "/Users/haonguyen/Works/Documents/AudioSource/MJ/BeatIt/BeatIt_cut.mp3",
+  "mode": 0,
+  "title": "Beat It",
+  "artist": "Michael Jackson",
+  "version": "Mapperatorinator V32-mini",
+  "count": 43,
+  "categories": [
+    "Compose",
+    "Misc",
+    "New Combos",
+    "Rhythm",
+    "Timing"
+  ],
+  "suggestions": [
+    {
+      "category": "Misc",
+      "time": 1881,
+      "timestamp_time": 1881,
+      "combo_index": 1,
+      "surprisal": 55.68531799316406,
+      "importance": 6,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "None",
+      "x": 73,
+      "y": 20,
+      "actual": {
+        "type": "dist",
+        "value": 114,
+        "str": "114"
+      },
+      "expected": {
+        "type": "spinner",
+        "value": 0,
+        "str": "spinner0"
+      },
+      "explanation": "Expected Spinner spinner0 instead of Dist 114."
+    },
+    {
+      "category": "New Combos",
+      "time": 1881,
+      "timestamp_time": 1881,
+      "combo_index": 1,
+      "surprisal": 99.86698150634766,
+      "importance": 10,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "None",
+      "x": 73,
+      "y": 20,
+      "actual": {
+        "type": "hitsound",
+        "value": 32,
+        "str": "soft:soft-none"
+      },
+      "expected": {
+        "type": "new_combo",
+        "value": 0,
+        "str": "new_combo0"
+      },
+      "explanation": "Expected new combo."
+    },
+    {
+      "category": "Rhythm",
+      "time": 4707,
+      "timestamp_time": 4707,
+      "combo_index": 5,
+      "surprisal": 22.669788360595703,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 67,
+      "y": 67,
+      "actual": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "expected": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "explanation": "Expected a Slider Head instead of a Circle."
+    },
+    {
+      "category": "Timing",
+      "time": 14692,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 213.34083557128906,
+      "importance": 21,
+      "context_type": "map",
+      "group_type": "measure",
+      "group_str": "Measure",
+      "previous_group_str": "Circle",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Unexpected new measure."
+    },
+    {
+      "category": "New Combos",
+      "time": 21633,
+      "timestamp_time": 21633,
+      "combo_index": 6,
+      "surprisal": 51.31721115112305,
+      "importance": 5,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Slider End",
+      "x": 0,
+      "y": 28,
+      "actual": {
+        "type": "hitsound",
+        "value": 24,
+        "str": "normal:soft-none"
+      },
+      "expected": {
+        "type": "new_combo",
+        "value": 0,
+        "str": "new_combo0"
+      },
+      "explanation": "Expected new combo."
+    },
+    {
+      "category": "Rhythm",
+      "time": 25107,
+      "timestamp_time": 25107,
+      "combo_index": 5,
+      "surprisal": 30.325523376464844,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 33,
+      "y": 72,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Rhythm",
+      "time": 37684,
+      "timestamp_time": 37684,
+      "combo_index": 3,
+      "surprisal": 26.66435432434082,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 65,
+      "y": 83,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Compose",
+      "time": 42019,
+      "timestamp_time": 42019,
+      "combo_index": 3,
+      "surprisal": 29.52397918701172,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 85,
+      "y": 93,
+      "actual": {
+        "type": "pos_y",
+        "value": 93,
+        "str": "y:372"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 27,
+        "str": "y:108"
+      },
+      "explanation": "Expected position y:108 instead of y:372."
+    },
+    {
+      "category": "Compose",
+      "time": 45704,
+      "timestamp_time": 45704,
+      "combo_index": 4,
+      "surprisal": 145.8589630126953,
+      "importance": 15,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 82,
+      "y": 33,
+      "actual": {
+        "type": "pos_x",
+        "value": 82,
+        "str": "x:328"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 81,
+        "str": "x:324"
+      },
+      "explanation": "Expected position x:324 instead of x:328."
+    },
+    {
+      "category": "Compose",
+      "time": 54371,
+      "timestamp_time": 54371,
+      "combo_index": 4,
+      "surprisal": 25.13825225830078,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 37,
+      "y": 74,
+      "actual": {
+        "type": "pos_y",
+        "value": 74,
+        "str": "y:296"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 72,
+        "str": "y:288"
+      },
+      "explanation": "Expected position y:288 instead of y:296."
+    },
+    {
+      "category": "Rhythm",
+      "time": 54587,
+      "timestamp_time": 54587,
+      "combo_index": 5,
+      "surprisal": 96.40364074707031,
+      "importance": 10,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 77,
+      "y": 74,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Timing",
+      "time": 65854,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 78.28201293945312,
+      "importance": 8,
+      "context_type": "map",
+      "group_type": "measure",
+      "group_str": "Measure",
+      "previous_group_str": "Circle",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Unexpected new measure."
+    },
+    {
+      "category": "Timing",
+      "time": 66274,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 83.27023315429688,
+      "importance": 8,
+      "context_type": "map",
+      "group_type": "measure",
+      "group_str": "Measure",
+      "previous_group_str": "Slider End",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Unexpected new measure."
+    },
+    {
+      "category": "Compose",
+      "time": 70839,
+      "timestamp_time": 70839,
+      "combo_index": 6,
+      "surprisal": 47.870540618896484,
+      "importance": 5,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 64,
+      "y": 80,
+      "actual": {
+        "type": "dist",
+        "value": 144,
+        "str": "144"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 145,
+        "str": "145"
+      },
+      "explanation": "Expected distance 145 to the previous Circle instead of 144."
+    },
+    {
+      "category": "Compose",
+      "time": 71708,
+      "timestamp_time": 71491,
+      "combo_index": 2,
+      "surprisal": 41.2933235168457,
+      "importance": 4,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Last Anchor",
+      "previous_group_str": "Slider Head",
+      "x": 78,
+      "y": 40,
+      "actual": {
+        "type": "dist",
+        "value": 101,
+        "str": "101"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 116,
+        "str": "116"
+      },
+      "explanation": "Expected distance 116 to the previous Slider Head instead of 101."
+    },
+    {
+      "category": "Compose",
+      "time": 73665,
+      "timestamp_time": 73665,
+      "combo_index": 5,
+      "surprisal": 175.55374145507812,
+      "importance": 18,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 68,
+      "y": 42,
+      "actual": {
+        "type": "pos_y",
+        "value": 42,
+        "str": "y:168"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 43,
+        "str": "y:172"
+      },
+      "explanation": "Expected position y:172 instead of y:168."
+    },
+    {
+      "category": "Compose",
+      "time": 81881,
+      "timestamp_time": 81881,
+      "combo_index": 5,
+      "surprisal": 22.881500244140625,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 31,
+      "y": 56,
+      "actual": {
+        "type": "pos_y",
+        "value": 56,
+        "str": "y:224"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 55,
+        "str": "y:220"
+      },
+      "explanation": "Expected position y:220 instead of y:224."
+    },
+    {
+      "category": "Compose",
+      "time": 88802,
+      "timestamp_time": 88802,
+      "combo_index": 3,
+      "surprisal": 511.08538818359375,
+      "importance": 51,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 44,
+      "y": 28,
+      "actual": {
+        "type": "pos_y",
+        "value": 28,
+        "str": "y:112"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 29,
+        "str": "y:116"
+      },
+      "explanation": "Expected position y:116 instead of y:112."
+    },
+    {
+      "category": "Compose",
+      "time": 90100,
+      "timestamp_time": 90100,
+      "combo_index": 1,
+      "surprisal": 58.145206451416016,
+      "importance": 6,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 64,
+      "y": 46,
+      "actual": {
+        "type": "pos_y",
+        "value": 46,
+        "str": "y:184"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 47,
+        "str": "y:188"
+      },
+      "explanation": "Expected position y:188 instead of y:184."
+    },
+    {
+      "category": "Rhythm",
+      "time": 90528,
+      "timestamp_time": 90528,
+      "combo_index": 3,
+      "surprisal": 22.016376495361328,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 45,
+      "y": 29,
+      "actual": {
+        "type": "t",
+        "value": 90528,
+        "str": "01:30:528"
+      },
+      "expected": {
+        "type": "t",
+        "value": 90540,
+        "str": "01:30:540"
+      },
+      "explanation": "Expected object at 01:30:540 instead of 01:30:528."
+    },
+    {
+      "category": "Compose",
+      "time": 90744,
+      "timestamp_time": 90744,
+      "combo_index": 4,
+      "surprisal": 48.51729965209961,
+      "importance": 5,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 84,
+      "y": 29,
+      "actual": {
+        "type": "dist",
+        "value": 159,
+        "str": "159"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 160,
+        "str": "160"
+      },
+      "explanation": "Expected distance 160 to the previous Circle instead of 159."
+    },
+    {
+      "category": "Compose",
+      "time": 93996,
+      "timestamp_time": 93996,
+      "combo_index": 2,
+      "surprisal": 40.63329315185547,
+      "importance": 4,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Slider End",
+      "x": 61,
+      "y": 87,
+      "actual": {
+        "type": "pos_y",
+        "value": 87,
+        "str": "y:348"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 88,
+        "str": "y:352"
+      },
+      "explanation": "Expected position y:352 instead of y:348."
+    },
+    {
+      "category": "Compose",
+      "time": 100390,
+      "timestamp_time": 100282,
+      "combo_index": 9,
+      "surprisal": 37.926353454589844,
+      "importance": 4,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Last Anchor",
+      "previous_group_str": "Slider Head",
+      "x": 85,
+      "y": 59,
+      "actual": {
+        "type": "dist",
+        "value": 54,
+        "str": "54"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 118,
+        "str": "118"
+      },
+      "explanation": "Expected distance 118 to the previous Slider Head instead of 54."
+    },
+    {
+      "category": "Compose",
+      "time": 102883,
+      "timestamp_time": 102883,
+      "combo_index": 4,
+      "surprisal": 38.49809646606445,
+      "importance": 4,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 101,
+      "y": 48,
+      "actual": {
+        "type": "dist",
+        "value": 204,
+        "str": "204"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 203,
+        "str": "203"
+      },
+      "explanation": "Expected distance 203 to the previous Circle instead of 204."
+    },
+    {
+      "category": "Compose",
+      "time": 103750,
+      "timestamp_time": 103750,
+      "combo_index": 1,
+      "surprisal": 23.327756881713867,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 101,
+      "y": 47,
+      "actual": {
+        "type": "pos_y",
+        "value": 47,
+        "str": "y:188"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 48,
+        "str": "y:192"
+      },
+      "explanation": "Expected position y:192 instead of y:188."
+    },
+    {
+      "category": "New Combos",
+      "time": 103750,
+      "timestamp_time": 103750,
+      "combo_index": 1,
+      "surprisal": 21.838760375976562,
+      "importance": 2,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 101,
+      "y": 47,
+      "actual": {
+        "type": "new_combo",
+        "value": 0,
+        "str": "new_combo0"
+      },
+      "expected": {
+        "type": "hitsound",
+        "value": 32,
+        "str": "soft:soft-none"
+      },
+      "explanation": "Unexpected new combo."
+    },
+    {
+      "category": "Compose",
+      "time": 108085,
+      "timestamp_time": 108085,
+      "combo_index": 5,
+      "surprisal": 30.30930519104004,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 63,
+      "y": 12,
+      "actual": {
+        "type": "pos_x",
+        "value": 63,
+        "str": "x:252"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 64,
+        "str": "x:256"
+      },
+      "explanation": "Expected position x:256 instead of x:252."
+    },
+    {
+      "category": "Compose",
+      "time": 108519,
+      "timestamp_time": 108519,
+      "combo_index": 7,
+      "surprisal": 114.15760040283203,
+      "importance": 11,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 64,
+      "y": 81,
+      "actual": {
+        "type": "pos_x",
+        "value": 64,
+        "str": "x:256"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 63,
+        "str": "x:252"
+      },
+      "explanation": "Expected position x:252 instead of x:256."
+    },
+    {
+      "category": "New Combos",
+      "time": 110686,
+      "timestamp_time": 110686,
+      "combo_index": 8,
+      "surprisal": 25.707138061523438,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 63,
+      "y": 13,
+      "actual": {
+        "type": "hitsound",
+        "value": 32,
+        "str": "soft:soft-none"
+      },
+      "expected": {
+        "type": "new_combo",
+        "value": 0,
+        "str": "new_combo0"
+      },
+      "explanation": "Expected new combo."
+    },
+    {
+      "category": "Compose",
+      "time": 112421,
+      "timestamp_time": 112421,
+      "combo_index": 8,
+      "surprisal": 79.51583862304688,
+      "importance": 8,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 63,
+      "y": 13,
+      "actual": {
+        "type": "dist",
+        "value": 204,
+        "str": "204"
+      },
+      "expected": {
+        "type": "dist",
+        "value": 203,
+        "str": "203"
+      },
+      "explanation": "Expected distance 203 to the previous Circle instead of 204."
+    },
+    {
+      "category": "Compose",
+      "time": 112854,
+      "timestamp_time": 112854,
+      "combo_index": 2,
+      "surprisal": 108.88736724853516,
+      "importance": 11,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 64,
+      "y": 83,
+      "actual": {
+        "type": "pos_y",
+        "value": 83,
+        "str": "y:332"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 82,
+        "str": "y:328"
+      },
+      "explanation": "Expected position y:328 instead of y:332."
+    },
+    {
+      "category": "Compose",
+      "time": 114371,
+      "timestamp_time": 114371,
+      "combo_index": 1,
+      "surprisal": 28.69786834716797,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 31,
+      "y": 51,
+      "actual": {
+        "type": "pos_x",
+        "value": 31,
+        "str": "x:124"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 101,
+        "str": "x:404"
+      },
+      "explanation": "Expected position x:404 instead of x:124."
+    },
+    {
+      "category": "Timing",
+      "time": 115231,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 336.5289001464844,
+      "importance": 34,
+      "context_type": "map",
+      "group_type": "measure",
+      "group_str": "Measure",
+      "previous_group_str": "Slider End",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "measure",
+        "value": 0,
+        "str": "measure0"
+      },
+      "expected": {
+        "type": "beat",
+        "value": 0,
+        "str": "beat0"
+      },
+      "explanation": "Unexpected new measure."
+    },
+    {
+      "category": "Rhythm",
+      "time": 115231,
+      "timestamp_time": 115231,
+      "combo_index": 3,
+      "surprisal": 55.8247184753418,
+      "importance": 6,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Slider End",
+      "x": 31,
+      "y": 50,
+      "actual": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "expected": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "explanation": "Expected a Slider Head instead of a Circle."
+    },
+    {
+      "category": "Rhythm",
+      "time": 115665,
+      "timestamp_time": 115665,
+      "combo_index": 5,
+      "surprisal": 46.011138916015625,
+      "importance": 5,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 31,
+      "y": 50,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Compose",
+      "time": 117622,
+      "timestamp_time": 117622,
+      "combo_index": 8,
+      "surprisal": 72.49136352539062,
+      "importance": 7,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 42,
+      "y": 45,
+      "actual": {
+        "type": "pos_y",
+        "value": 45,
+        "str": "y:180"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 44,
+        "str": "y:176"
+      },
+      "explanation": "Expected position y:176 instead of y:180."
+    },
+    {
+      "category": "Compose",
+      "time": 120437,
+      "timestamp_time": 120437,
+      "combo_index": 5,
+      "surprisal": 182.2687225341797,
+      "importance": 18,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 22,
+      "y": 49,
+      "actual": {
+        "type": "pos_x",
+        "value": 22,
+        "str": "x:88"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 106,
+        "str": "x:424"
+      },
+      "explanation": "Expected position x:424 instead of x:88."
+    },
+    {
+      "category": "Compose",
+      "time": 120437,
+      "timestamp_time": 120437,
+      "combo_index": 5,
+      "surprisal": 389.4566345214844,
+      "importance": 39,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 22,
+      "y": 49,
+      "actual": {
+        "type": "pos_y",
+        "value": 49,
+        "str": "y:196"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 48,
+        "str": "y:192"
+      },
+      "explanation": "Expected position y:192 instead of y:196."
+    },
+    {
+      "category": "Compose",
+      "time": 121304,
+      "timestamp_time": 121304,
+      "combo_index": 1,
+      "surprisal": 96.08494567871094,
+      "importance": 10,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 106,
+      "y": 45,
+      "actual": {
+        "type": "pos_x",
+        "value": 106,
+        "str": "x:424"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 22,
+        "str": "x:88"
+      },
+      "explanation": "Expected position x:88 instead of x:424."
+    },
+    {
+      "category": "Compose",
+      "time": 124336,
+      "timestamp_time": 124336,
+      "combo_index": 5,
+      "surprisal": 2686.9453125,
+      "importance": 269,
+      "context_type": "map",
+      "group_type": "circle",
+      "group_str": "Circle",
+      "previous_group_str": "Circle",
+      "x": 70,
+      "y": 64,
+      "actual": {
+        "type": "pos_y",
+        "value": 64,
+        "str": "y:256"
+      },
+      "expected": {
+        "type": "pos_y",
+        "value": 63,
+        "str": "y:252"
+      },
+      "explanation": "Expected position y:252 instead of y:256."
+    },
+    {
+      "category": "Compose",
+      "time": 125419,
+      "timestamp_time": 125203,
+      "combo_index": 2,
+      "surprisal": 25.994022369384766,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "last_anchor",
+      "group_str": "Last Anchor",
+      "previous_group_str": "Red Anchor #2",
+      "x": 16,
+      "y": 51,
+      "actual": {
+        "type": "pos_x",
+        "value": 16,
+        "str": "x:64"
+      },
+      "expected": {
+        "type": "pos_x",
+        "value": 54,
+        "str": "x:216"
+      },
+      "explanation": "Expected position x:216 instead of x:64."
+    },
+    {
+      "category": "Rhythm",
+      "time": 134089,
+      "timestamp_time": 134089,
+      "combo_index": 3,
+      "surprisal": 28.38107681274414,
+      "importance": 3,
+      "context_type": "map",
+      "group_type": "slider_head",
+      "group_str": "Slider Head",
+      "previous_group_str": "Circle",
+      "x": 83,
+      "y": 47,
+      "actual": {
+        "type": "slider_head",
+        "value": 0,
+        "str": "slider_head0"
+      },
+      "expected": {
+        "type": "circle",
+        "value": 0,
+        "str": "circle0"
+      },
+      "explanation": "Expected a Circle instead of a Slider Head."
+    },
+    {
+      "category": "Timing",
+      "time": 142082,
+      "timestamp_time": null,
+      "combo_index": null,
+      "surprisal": 57.6264533996582,
+      "importance": 6,
+      "context_type": "map",
+      "group_type": "beat",
+      "group_str": "Beat",
+      "previous_group_str": "Slider End",
+      "x": null,
+      "y": null,
+      "actual": {
+        "type": "t",
+        "value": 142082,
+        "str": "02:22:082"
+      },
+      "expected": {
+        "type": "control",
+        "value": 2,
+        "str": "End of sequence"
+      },
+      "explanation": "Expected end of beatmap."
+    }
+  ]
+}
