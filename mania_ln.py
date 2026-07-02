@@ -2,10 +2,14 @@
 """Deterministic long-note (LN) post-process for osu!mania maps.
 
 The model's `hold_note_ratio` token is only an ON/OFF switch — it enables long
-notes but can't hit a precise LN%. This pass sets the *exact* per-tier LN% by
-converting the most-sustained tap notes into holds, using an audio sustain
-signal (HPSS harmonic energy decay) so holds land on genuinely held sounds
-(vocals / pads / synths), not transient hits.
+notes but can't hit a precise LN%. This pass sets the *exact* per-tier LN% in
+whichever direction is needed:
+  • too few LNs  → convert the most-sustained taps into holds, using an audio
+    sustain signal (HPSS harmonic energy decay) so holds land on genuinely held
+    sounds (vocals / pads / synths), not transient hits.
+  • too many LNs → convert the SHORTEST holds back to taps (the model tends to
+    over-produce ≈1/4-beat holds that inflate LN%); the longest, most-sustained
+    holds are kept. This direction needs no audio.
 
 Design (see BENCHMARK.md §6): LN% is highest on Easy (a hold is more forgiving
 than a tap burst) and decreases with difficulty; dense high-★ charts have no
@@ -87,7 +91,7 @@ def apply_long_notes(osu_path: str, audio_path: str, target_ratio: float,
                 break
 
     # parse hit objects
-    objs = []  # dict per line: idx, x, time, typ, is_hold, col, raw fields
+    objs = []  # dict per line: idx, x, time, typ, is_hold, col, end, hitsample
     for i in range(ho_start, ho_end):
         raw = lines[i]
         if not raw.strip():
@@ -97,8 +101,17 @@ def apply_long_notes(osu_path: str, audio_path: str, target_ratio: float,
             continue
         x, y, t, typ = int(p[0]), int(p[1]), int(p[2]), int(p[3])
         is_hold = bool(typ & 128)
+        field = p[5] if len(p) > 5 else "0:0:0:0:"
+        if is_hold:
+            # mania hold extras are "endTime:hitSample"
+            head, _, rest = field.partition(":")
+            end = int(head) if head.isdigit() else t
+            hitsample = rest if rest else "0:0:0:0:"
+        else:
+            end = None
+            hitsample = field
         objs.append({"line": i, "x": x, "y": y, "t": t, "typ": typ,
-                     "hs": p[4], "sample": p[5] if len(p) > 5 else "0:0:0:0:",
+                     "hs": p[4], "hitsample": hitsample, "end": end,
                      "is_hold": is_hold, "col": _column(x, keycount)})
 
     total = len(objs)
@@ -107,10 +120,11 @@ def apply_long_notes(osu_path: str, audio_path: str, target_ratio: float,
     existing_holds = sum(1 for o in objs if o["is_hold"])
     want_holds = round(target_ratio * total)
     need = want_holds - existing_holds
-    if need <= 0:
+
+    if need == 0:
         if verbose:
-            print(f"[mania_ln] already {existing_holds}/{total} "
-                  f"({100*existing_holds/total:.0f}%) LN ≥ target "
+            print(f"[mania_ln] {existing_holds}/{total} "
+                  f"({100*existing_holds/total:.0f}%) LN == target "
                   f"{100*target_ratio:.0f}% — no change")
         if out_path and out_path != osu_path:
             with open(out_path, "w", encoding="utf-8") as f:
@@ -118,6 +132,31 @@ def apply_long_notes(osu_path: str, audio_path: str, target_ratio: float,
         return {"total": total, "ln_before": existing_holds,
                 "ln_after": existing_holds, "converted": 0,
                 "target": target_ratio, "keycount": keycount}
+
+    if need < 0:
+        # Model over-produced LNs → convert the SHORTEST holds back to taps to
+        # bring LN% DOWN to target. Short (≈1/4-beat) holds inflate the count and
+        # are the least meaningful LNs, so they go first; the longest / most-
+        # sustained holds are preserved. No audio needed for the reduction path.
+        excess = -need
+        holds = [o for o in objs if o["is_hold"]]
+        holds.sort(key=lambda o: (o["end"] if o["end"] is not None else o["t"]) - o["t"])
+        drop = holds[:excess]
+        for o in drop:
+            new_typ = (o["typ"] & ~128) | 1       # hold bit off, tap (normal) bit on
+            lines[o["line"]] = (f"{o['x']},{o['y']},{o['t']},{new_typ},"
+                                f"{o['hs']},{o['hitsample']}")
+        ln_after = existing_holds - len(drop)
+        out = out_path or osu_path
+        with open(out, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
+        if verbose:
+            print(f"[mania_ln] {keycount}K  total={total}  "
+                  f"LN {existing_holds}→{ln_after} ({100*ln_after/total:.0f}%, "
+                  f"target {100*target_ratio:.0f}%)  removed={len(drop)} "
+                  f"(shortest LNs → taps)")
+        return {"total": total, "ln_before": existing_holds, "ln_after": ln_after,
+                "converted": -len(drop), "target": target_ratio, "keycount": keycount}
 
     # audio sustain signal: HPSS harmonic RMS envelope (sustained pitched content)
     y, sr = librosa.load(audio_path, sr=22050, mono=True)
@@ -168,9 +207,9 @@ def apply_long_notes(osu_path: str, audio_path: str, target_ratio: float,
     cands.sort(key=lambda z: z[0], reverse=True)
     chosen = cands[:need]
     for _sus, o, end_ms in chosen:
-        new_typ = (o["typ"] & ~1) | 128           # circle bit off, hold bit on
+        new_typ = (o["typ"] & ~1) | 128           # tap bit off, hold bit on
         lines[o["line"]] = (f"{o['x']},{o['y']},{o['t']},{new_typ},"
-                            f"{o['hs']},{end_ms}:{o['sample']}")
+                            f"{o['hs']},{end_ms}:{o['hitsample']}")
 
     converted = len(chosen)
     ln_after = existing_holds + converted
