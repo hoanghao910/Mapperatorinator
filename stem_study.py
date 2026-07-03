@@ -197,8 +197,45 @@ def cmd_report():
     print("\n".join(out))
 
 
+def cmd_status():
+    """Live snapshot: done/total, current job, mean time, ETA. Safe to run any
+    time (reads results.json + queries the API; never touches the running job)."""
+    jobs_path = os.path.join(STUDY, "jobs.json")
+    res_path = os.path.join(STUDY, "results.json")
+    total = len(json.load(open(jobs_path))) if os.path.exists(jobs_path) else 0
+    rows = json.load(open(res_path)) if os.path.exists(res_path) else []
+    done = [r for r in rows if r["status"] == "done"]
+    err = [r for r in rows if r["status"] == "error"]
+    gens = [r["finished"] - r["started"] for r in done
+            if r.get("finished") and r.get("started")]
+    mean = sum(gens) / len(gens) if gens else 312
+    left = total - len(rows)
+    try:
+        q = _api("/health")["queue"]
+    except Exception:
+        q = "?"
+    try:
+        running = _api("/jobs?status=running&limit=1")
+        cur = running[0]["title"] if running else "(none)"
+    except Exception:
+        cur = "(unavailable)"
+    print(f"stem study — {len(rows)}/{total} terminal  (done {len(done)}, err {len(err)})")
+    print(f"  API queue     : {q}")
+    print(f"  running now   : {cur}")
+    print(f"  mean gen/map  : {mean:.0f}s ({mean/60:.1f} min)")
+    print(f"  est remaining : {left} left → ~{left*mean/60:.0f} min")
+    if done:
+        last = sorted(done, key=lambda z: z.get("finished") or 0)[-1]
+        print(f"  last finished : {last['song']}/{last['src']}/{last['lvl']}")
+    if err:
+        print(f"  ERRORS        : " + ", ".join(f"{r['song']}/{r['src']}/{r['lvl']}" for r in err))
+
+
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
+    if cmd == "status":
+        cmd_status()
+        return
     if cmd in ("submit", "all"):
         cmd_submit()
     if cmd in ("poll", "all"):
