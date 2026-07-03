@@ -25,11 +25,11 @@ import sys
 # Target notes/s for a casual 5-lane tap game. Tune to taste; --target-nps
 # overrides. Density rises with difficulty but stays far below raw osu output.
 _TIERS = [
-    # (max_star, name,     target_nps)
-    (2.5,  "Easy",   2.5),
-    (4.0,  "Normal", 3.5),
-    (5.5,  "Hard",   4.5),
-    (99.0, "Expert", 6.0),
+    # (max_star, name,     target_nps)   — "casual" profile, tuned 2026-07-03
+    (2.5,  "Easy",   2.0),
+    (4.0,  "Normal", 3.0),
+    (5.5,  "Hard",   4.0),
+    (99.0, "Expert", 5.0),
 ]
 
 
@@ -38,7 +38,7 @@ def tier_for(difficulty: float) -> dict:
     for max_star, name, nps in _TIERS:
         if difficulty <= max_star:
             return {"name": name, "target_nps": nps}
-    return {"name": "Expert", "target_nps": 6.0}
+    return {"name": "Expert", "target_nps": 5.0}
 
 
 # ── .osu parsing helpers ─────────────────────────────────────────────────────

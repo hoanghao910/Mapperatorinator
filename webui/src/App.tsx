@@ -118,6 +118,11 @@ export default function App() {
   // Live analysis: upload the current .osu + audio to the API, poll, load findings.
   const analyzeLive = async () => {
     if (!osuText) { setError('Load a .osu beatmap first.'); return }
+    // MaiMod runs on the v30 model, which only supports osu!standard (mode 0).
+    if (beatmap?.mode === 3) {
+      setError('MaiMod analysis (v30) supports osu!standard only — this is an osu!mania chart, which v30 can’t analyze.')
+      return
+    }
     setAnalyzing(true); setAnalyzeMsg('uploading'); setError(null)
     try {
       const fd = new FormData()
