@@ -26,19 +26,25 @@ import sys
 # overrides. Density rises with difficulty but stays far below raw osu output.
 _TIERS = [
     # (max_star, name,     target_nps)   — "casual" profile, tuned 2026-07-03
+    # ── casual band: the standard Easy / Normal / Hard progression ──
     (2.5,  "Easy",   2.0),
     (4.0,  "Normal", 3.0),
     (5.5,  "Hard",   4.0),
-    (99.0, "Expert", 5.0),
+    # ── Expert: a separate CHALLENGE tier, outside the casual band (denser) ──
+    (99.0, "Expert", 5.5),
 ]
+
+# The casual band caps out at Hard; Expert is a distinct challenge level.
+CASUAL_TIERS = ("Easy", "Normal", "Hard")
 
 
 def tier_for(difficulty: float) -> dict:
-    """Map a star rating to its density tier (name + target notes/s)."""
+    """Map a star rating to its density tier (name + target notes/s + band)."""
     for max_star, name, nps in _TIERS:
         if difficulty <= max_star:
-            return {"name": name, "target_nps": nps}
-    return {"name": "Expert", "target_nps": 5.0}
+            return {"name": name, "target_nps": nps,
+                    "band": "casual" if name in CASUAL_TIERS else "challenge"}
+    return {"name": "Expert", "target_nps": 5.5, "band": "challenge"}
 
 
 # ── .osu parsing helpers ─────────────────────────────────────────────────────
@@ -235,8 +241,8 @@ def main():
     else:
         tier = tier_for(args.difficulty)
         target = tier["target_nps"]
-        print(f"[osu_thin] ★{args.difficulty} → {tier['name']} tier, "
-              f"target {target:.1f} nps")
+        print(f"[osu_thin] ★{args.difficulty} → {tier['name']} tier "
+              f"({tier['band']}), target {target:.1f} nps")
     apply_density_cap(args.osu, target, out_path=args.out,
                       keep_accents=args.keep_accents)
 
