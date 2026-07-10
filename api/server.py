@@ -20,6 +20,7 @@ Endpoints
 """
 import base64
 import os
+import re
 import threading
 import time
 import traceback
@@ -386,15 +387,64 @@ def _run_label(rel_posix: str) -> str:
     return " · ".join(t.replace("_", " ") for t in tail) or rel_posix
 
 
-def _find_run_audio(osu_path: Path) -> Optional[Path]:
-    """Best-effort sibling audio: same dir, else one level up."""
-    for d in (osu_path.parent, osu_path.parent.parent):
-        if not d or not d.is_dir():
-            continue
+def _norm(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+def _read_audio_filename(osu_path: Path) -> Optional[str]:
+    """The `AudioFilename:` basename declared in the .osu, if any."""
+    try:
+        with open(osu_path, encoding="utf-8", errors="ignore") as f:
+            for ln in f:
+                s = ln.strip()
+                if s.startswith("AudioFilename:"):
+                    return os.path.basename(s.split(":", 1)[1].strip())
+                if s.startswith("[") and s != "[General]":
+                    break  # AudioFilename lives in [General], near the top
+    except OSError:
+        pass
+    return None
+
+
+def _audio_index() -> dict:
+    """basename(lower) → [paths] for every audio file under the output dir. Built
+    once per request so audio can be resolved even when it lives in a different
+    subtree than the map (e.g. stem_study keeps stems under stems/htdemucs/…)."""
+    idx: dict = {}
+    if RUNS_ROOT.is_dir():
         for ext in _RUN_AUDIO_EXT:
-            hits = sorted(d.glob(f"*{ext}"))
-            if hits:
-                return hits[0]
+            for p in RUNS_ROOT.rglob(f"*{ext}"):
+                idx.setdefault(p.name.lower(), []).append(p)
+    return idx
+
+
+def _resolve_run_audio(osu_path: Path, index: Optional[dict] = None) -> Optional[Path]:
+    """Find the audio for a map. Prefer a sibling matching its AudioFilename; else
+    search the whole output tree for that basename, disambiguating by the map's
+    path tokens (so cocongmaisac/other_H → stems/htdemucs/CoCongMaiSac/other.mp3,
+    not thapphonktudo's other.mp3). Falls back to any audio beside the map."""
+    af = _read_audio_filename(osu_path)
+    if af:
+        sib = osu_path.parent / af
+        if sib.is_file():
+            return sib
+        cands = (index if index is not None else _audio_index()).get(af.lower(), [])
+        if len(cands) == 1:
+            return cands[0]
+        if cands:
+            try:
+                want = {_norm(t) for t in osu_path.relative_to(RUNS_ROOT).parts}
+            except ValueError:
+                want = set()
+            return max(cands, key=lambda c: len(
+                want & {_norm(t) for t in c.relative_to(RUNS_ROOT).parts}))
+    # last resort: any audio sitting next to the map (older API-job layout)
+    for d in (osu_path.parent, osu_path.parent.parent):
+        if d and d.is_dir():
+            for ext in _RUN_AUDIO_EXT:
+                hits = sorted(d.glob(f"*{ext}"))
+                if hits:
+                    return hits[0]
     return None
 
 
@@ -407,8 +457,10 @@ def list_runs(limit: int = 60):
     files = [p for p in RUNS_ROOT.rglob("*_fixed.osu")
              if "_uploads" not in p.parts]
     files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    files = files[:max(1, min(limit, 500))]
+    index = _audio_index()
     out = []
-    for p in files[:max(1, min(limit, 500))]:
+    for p in files:
         rel = p.relative_to(RUNS_ROOT).as_posix()
         st = _osu_quickstats(p)
         out.append({
@@ -416,7 +468,7 @@ def list_runs(limit: int = 60):
             "label": _run_label(rel),
             "path": rel,
             "mtime": int(p.stat().st_mtime),
-            "has_audio": _find_run_audio(p) is not None,
+            "has_audio": _resolve_run_audio(p, index) is not None,
             **st,
         })
     return out
@@ -430,9 +482,9 @@ def get_run_osu(rid: str):
 
 @app.get("/runs/{rid}/audio")
 def get_run_audio(rid: str):
-    aud = _find_run_audio(_run_path(rid))
+    aud = _resolve_run_audio(_run_path(rid))
     if not aud:
-        raise HTTPException(404, "no sibling audio for this run")
+        raise HTTPException(404, "no audio found for this run")
     return FileResponse(str(aud), filename=aud.name)
 
 
