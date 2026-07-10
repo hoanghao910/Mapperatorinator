@@ -11,6 +11,9 @@ type Mode = 'analyze' | 'pipeline'
 
 interface Demo { id: string; label: string; osu: string; audio: string; analysis: string }
 
+// A generated map discovered live from the API's output-dir scan (GET /api/runs).
+interface Run { id: string; label: string; mode?: number; objs?: number; nps?: number; ln_pct?: number; has_audio?: boolean }
+
 const DEMOS: Demo[] = [
   {
     id: 'dirty_diana',
@@ -41,6 +44,7 @@ export default function App() {
   const [beatmap, setBeatmap] = useState<Beatmap | null>(null)
   const [analysis, setAnalysis] = useState<Analysis | null>(null)
   const [demoId, setDemoId] = useState(DEMOS[0].id)
+  const [runs, setRuns] = useState<Run[]>([])
   const [audioUrl, setAudioUrl] = useState<string>(DEMOS[0].audio)
   const [timeMs, setTimeMs] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -55,20 +59,42 @@ export default function App() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const rafRef = useRef<number>()
 
-  // Load the selected demo (also runs on first mount).
+  // Fetch the list of recently generated maps from the API (disk scan). These
+  // populate a "Recent runs" group in the demo dropdown alongside static demos.
   useEffect(() => {
-    const demo = DEMOS.find((d) => d.id === demoId)!
+    fetch('/api/runs?limit=80')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rs: Run[]) => setRuns(Array.isArray(rs) ? rs : []))
+      .catch(() => setRuns([]))
+  }, [])
+
+  // Load the selected demo or run (also runs on first mount).
+  useEffect(() => {
     setSelected(null)
     setBeatmap(null)
     setAnalysis(null)
     setError(null)
+
+    if (demoId.startsWith('run:')) {
+      const rid = demoId.slice(4)
+      const run = runs.find((r) => r.id === rid)
+      // Serve audio from the API only if a sibling was found; else no playback.
+      setAudioUrl(run?.has_audio ? `/api/runs/${rid}/audio` : '')
+      fetch(`/api/runs/${rid}/osu`)
+        .then((r) => r.text())
+        .then((t) => { setOsuText(t); setBeatmap(parseOsu(t)) })
+        .catch(() => setError(`Could not load run ${run?.label ?? rid}`))
+      return
+    }
+
+    const demo = DEMOS.find((d) => d.id === demoId)!
     setAudioUrl(demo.audio)
     fetch(demo.osu)
       .then((r) => r.text())
       .then((t) => { setOsuText(t); setBeatmap(parseOsu(t)) })
       .catch(() => setError(`Could not load ${demo.label} beatmap`))
-    fetch(demo.analysis).then((r) => r.json()).then(setAnalysis).catch(() => {})
-  }, [demoId])
+    if (demo.analysis) fetch(demo.analysis).then((r) => r.json()).then(setAnalysis).catch(() => {})
+  }, [demoId, runs])
 
   // Land on the first object so the playfield isn't empty at t=0.
   useEffect(() => {
@@ -171,9 +197,22 @@ export default function App() {
             <label className="demo-select">
               demo
               <select value={demoId} onChange={(e) => setDemoId(e.target.value)}>
-                {DEMOS.map((d) => (
-                  <option key={d.id} value={d.id}>{d.label}</option>
-                ))}
+                <optgroup label="Demos">
+                  {DEMOS.map((d) => (
+                    <option key={d.id} value={d.id}>{d.label}</option>
+                  ))}
+                </optgroup>
+                {runs.length > 0 && (
+                  <optgroup label={`Recent runs (${runs.length})`}>
+                    {runs.map((r) => (
+                      <option key={r.id} value={`run:${r.id}`}>
+                        {r.label}
+                        {r.mode === 3 ? ' [mania]' : r.mode === 0 ? ' [std]' : ''}
+                        {r.nps != null ? ` · ${r.nps} nps` : ''}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
               </select>
             </label>
             <FileBtn label="Beatmap (.osu)" accept=".osu" onFile={loadOsuFile} />

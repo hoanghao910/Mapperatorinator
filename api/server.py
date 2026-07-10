@@ -18,6 +18,7 @@ Endpoints
   GET  /jobs/{id}/files/{which}     download .osu  (which = raw | fixed)
   DELETE /jobs/{id}                 cancel a still-queued job
 """
+import base64
 import os
 import threading
 import time
@@ -306,6 +307,133 @@ def get_analyze(jid: str):
     if not job:
         raise HTTPException(404, "analyze job not found")
     return job
+
+
+# ─────────────────────────── recent runs (disk scan) ───────────────────────────
+# The webui demo/analyze dropdowns are static fixtures; to also surface whatever
+# has actually been generated, we scan the output tree for finished maps and serve
+# them by an opaque id (base64 of the repo-relative path). No DB dependency, so it
+# catches maps made by any path (API jobs, stem_study, run_generate.sh, by hand).
+
+RUNS_ROOT = REPO / "mapperatorinator-output"
+_RUN_AUDIO_EXT = (".mp3", ".ogg", ".wav", ".m4a", ".flac")
+
+
+def _run_id(rel_posix: str) -> str:
+    return base64.urlsafe_b64encode(rel_posix.encode()).decode().rstrip("=")
+
+
+def _run_path(rid: str) -> Path:
+    """Decode a run id back to an on-disk .osu path, validated to stay under
+    RUNS_ROOT (no traversal) and to actually be an .osu file that exists."""
+    pad = "=" * (-len(rid) % 4)
+    try:
+        rel = base64.urlsafe_b64decode(rid + pad).decode()
+    except Exception:
+        raise HTTPException(400, "bad run id")
+    p = (RUNS_ROOT / rel).resolve()
+    try:
+        p.relative_to(RUNS_ROOT.resolve())
+    except ValueError:
+        raise HTTPException(400, "run id escapes output dir")
+    if p.suffix != ".osu" or not p.is_file():
+        raise HTTPException(404, "run map not found")
+    return p
+
+
+def _osu_quickstats(path: Path) -> dict:
+    """Mode + object count + notes/s + LN% from an .osu, cheap single pass."""
+    mode, times, holds, sec = None, [], 0, None
+    try:
+        with open(path, encoding="utf-8", errors="ignore") as f:
+            for ln in f:
+                s = ln.strip()
+                if s.startswith("Mode:"):
+                    try:
+                        mode = int(s.split(":", 1)[1])
+                    except ValueError:
+                        pass
+                elif s.startswith("["):
+                    sec = s
+                elif sec == "[HitObjects]" and s:
+                    p = s.split(",")
+                    if len(p) >= 4:
+                        try:
+                            times.append(int(p[2]))
+                            if int(p[3]) & 128:
+                                holds += 1
+                        except ValueError:
+                            pass
+    except OSError:
+        return {}
+    n = len(times)
+    if not n:
+        return {"mode": mode, "objs": 0}
+    dur = (max(times) - min(times)) / 1000.0
+    return {"mode": mode, "objs": n,
+            "nps": round(n / dur, 2) if dur else 0,
+            "ln_pct": round(100 * holds / n)}
+
+
+def _run_label(rel_posix: str) -> str:
+    """Human label from the path: the last 2-3 meaningful path parts, minus the
+    generic filename. e.g. stem_study/maps/thapphonktudo/original_H/x_fixed.osu
+    → 'thapphonktudo · original H'."""
+    parts = rel_posix.split("/")[:-1]  # drop filename
+    for junk in ("mapperatorinator-output", "maps", "api"):
+        parts = [p for p in parts if p != junk]
+    tail = parts[-2:] if len(parts) >= 2 else parts
+    return " · ".join(t.replace("_", " ") for t in tail) or rel_posix
+
+
+def _find_run_audio(osu_path: Path) -> Optional[Path]:
+    """Best-effort sibling audio: same dir, else one level up."""
+    for d in (osu_path.parent, osu_path.parent.parent):
+        if not d or not d.is_dir():
+            continue
+        for ext in _RUN_AUDIO_EXT:
+            hits = sorted(d.glob(f"*{ext}"))
+            if hits:
+                return hits[0]
+    return None
+
+
+@app.get("/runs")
+def list_runs(limit: int = 60):
+    """List recently generated maps (newest first) found on disk under the output
+    dir. Each entry has an opaque id usable with /runs/{id}/osu and /runs/{id}/audio."""
+    if not RUNS_ROOT.is_dir():
+        return []
+    files = [p for p in RUNS_ROOT.rglob("*_fixed.osu")
+             if "_uploads" not in p.parts]
+    files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    out = []
+    for p in files[:max(1, min(limit, 500))]:
+        rel = p.relative_to(RUNS_ROOT).as_posix()
+        st = _osu_quickstats(p)
+        out.append({
+            "id": _run_id(rel),
+            "label": _run_label(rel),
+            "path": rel,
+            "mtime": int(p.stat().st_mtime),
+            "has_audio": _find_run_audio(p) is not None,
+            **st,
+        })
+    return out
+
+
+@app.get("/runs/{rid}/osu")
+def get_run_osu(rid: str):
+    p = _run_path(rid)
+    return FileResponse(str(p), media_type="text/plain", filename=p.name)
+
+
+@app.get("/runs/{rid}/audio")
+def get_run_audio(rid: str):
+    aud = _find_run_audio(_run_path(rid))
+    if not aud:
+        raise HTTPException(404, "no sibling audio for this run")
+    return FileResponse(str(aud), filename=aud.name)
 
 
 @app.get("/", response_class=PlainTextResponse)
