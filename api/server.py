@@ -369,11 +369,12 @@ def _osu_quickstats(path: Path) -> dict:
         return {}
     n = len(times)
     if not n:
-        return {"mode": mode, "objs": 0}
+        return {"mode": mode, "objs": 0, "end_s": 0.0}
     dur = (max(times) - min(times)) / 1000.0
     return {"mode": mode, "objs": n,
             "nps": round(n / dur, 2) if dur else 0,
-            "ln_pct": round(100 * holds / n)}
+            "ln_pct": round(100 * holds / n),
+            "end_s": round(max(times) / 1000.0, 1)}
 
 
 def _run_label(rel_posix: str) -> str:
@@ -486,6 +487,59 @@ def get_run_audio(rid: str):
     if not aud:
         raise HTTPException(404, "no audio found for this run")
     return FileResponse(str(aud), filename=aud.name)
+
+
+# ─── pipeline sets: group source×level matrices (stem_study layout) by song ───
+# The Pipeline Demo needs a full matrix: an "original" chart plus per-stem charts
+# at E/N/H. stem_study writes exactly that as <song>/<source>_<level>/*_fixed.osu.
+# Group those into selectable pipelines so the demo isn't limited to baked-in
+# Beat It fixtures.
+
+_PL_SRC = {"original": "orig", "orig": "orig", "vocals": "vocals",
+           "drums": "drums", "bass": "bass", "other": "other"}
+_PL_LVL = {"E", "N", "H"}
+
+
+@app.get("/pipelines")
+def list_pipelines():
+    """Discover source×level chart matrices on disk and group them by song, so the
+    webui Pipeline Demo can offer real generated songs (not just fixtures). Each
+    entry: {song, label, duration, sources, levels, maps{src_lvl: {...}}, audio{src: id}}."""
+    if not RUNS_ROOT.is_dir():
+        return []
+    songs: dict = {}
+    for p in RUNS_ROOT.rglob("*_fixed.osu"):
+        if "_uploads" in p.parts:
+            continue
+        src_raw, _, lvl = p.parent.name.rpartition("_")
+        if lvl not in _PL_LVL or src_raw.lower() not in _PL_SRC:
+            continue
+        song = p.parent.parent.name
+        src = _PL_SRC[src_raw.lower()]
+        rel = p.relative_to(RUNS_ROOT).as_posix()
+        st = _osu_quickstats(p)
+        s = songs.setdefault(song, {"song": song, "maps": {}, "audio": {},
+                                    "sources": set(), "levels": set(), "duration": 0.0})
+        s["maps"][f"{src}_{lvl}"] = {"id": _run_id(rel), "path": rel,
+                                     "mode": st.get("mode"), "objs": st.get("objs"),
+                                     "nps": st.get("nps"), "ln_pct": st.get("ln_pct")}
+        s["sources"].add(src)
+        s["levels"].add(lvl)
+        s["duration"] = max(s["duration"], st.get("end_s") or 0.0)
+        # one run id per source is enough to fetch that source's (stem) audio
+        s["audio"].setdefault(src, _run_id(rel))
+    out = []
+    lvl_order = {"E": 0, "N": 1, "H": 2}
+    src_order = {"orig": 0, "vocals": 1, "drums": 2, "bass": 3, "other": 4}
+    for s in songs.values():
+        if "orig" not in s["sources"]:
+            continue  # need an original chart to anchor the comparison
+        s["sources"] = sorted(s["sources"], key=lambda x: src_order.get(x, 9))
+        s["levels"] = sorted(s["levels"], key=lambda x: lvl_order.get(x, 9))
+        s["label"] = s["song"].replace("_", " ")
+        out.append(s)
+    out.sort(key=lambda s: s["label"])
+    return out
 
 
 @app.get("/", response_class=PlainTextResponse)

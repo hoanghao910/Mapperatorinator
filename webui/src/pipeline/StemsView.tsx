@@ -19,6 +19,32 @@ const NL = 5
 const ZOOMS = [1, 2, 4, 8]
 const MAP_SRC = ['orig', 'vocals', 'drums', 'bass', 'other'] // a map is generated per source
 
+// Decode an audio URL to a normalized peak-per-bucket array, for songs that have
+// no precomputed peaks JSON (dynamic runs served by the API). Best-effort: any
+// failure just leaves that stem's waveform empty while audio still plays.
+async function computePeaks(url: string, buckets = 1200): Promise<number[]> {
+  const AC: typeof AudioContext =
+    (window as any).AudioContext || (window as any).webkitAudioContext
+  const ac = new AC()
+  try {
+    const buf = await fetch(url).then((r) => r.arrayBuffer())
+    const audio = await ac.decodeAudioData(buf)
+    const ch = audio.getChannelData(0)
+    const block = Math.max(1, Math.floor(ch.length / buckets))
+    const out: number[] = []
+    let max = 0
+    for (let i = 0; i < buckets; i++) {
+      let m = 0
+      const s = i * block
+      for (let j = 0; j < block; j++) { const v = Math.abs(ch[s + j] || 0); if (v > m) m = v }
+      out.push(m); if (m > max) max = m
+    }
+    return max > 0 ? out.map((v) => v / max) : out
+  } finally {
+    ac.close()
+  }
+}
+
 function setup(cv: HTMLCanvasElement) {
   const ctx = cv.getContext('2d')!
   const dpr = window.devicePixelRatio || 1
@@ -88,8 +114,21 @@ function drawPianoRoll(cv: HTMLCanvasElement, notes: DiffNote[], t: number, vs: 
   }
 }
 
-/** Audio/Stems: mixer (checkboxes) + waveform ⇄ per-stem gameplay (level selectable). */
-export default function StemsView({ demo, matrix, diffs }: { demo: DemoData; matrix: MapMatrix; diffs: Diffs }) {
+/** Audio/Stems: mixer (checkboxes) + waveform ⇄ per-stem gameplay (level selectable).
+ * audioSrc/peaksSrc let a caller point at a different song's assets: audioSrc(k)
+ * returns the URL for stem k; peaksSrc is a peaks-JSON url, or null to compute
+ * peaks from the audio client-side (dynamic runs). songId scopes the audio/peaks
+ * caches so switching songs resets them. */
+export default function StemsView({
+  demo, matrix, diffs, audioSrc, peaksSrc, songId = 'builtin',
+}: {
+  demo: DemoData; matrix: MapMatrix; diffs: Diffs
+  audioSrc?: (k: string) => string | undefined
+  peaksSrc?: string | null
+  songId?: string
+}) {
+  const srcOf = (k: string): string =>
+    (audioSrc ? audioSrc(k) : STEMS.find((x) => x.k === k)?.src) || ''
   const [view, setView] = useState<'wave' | 'game'>('wave')
   const [gameLevel, setGameLevel] = useState<Level>('N') // which difficulty the stem maps show
   const [selected, setSelected] = useState<Set<string>>(new Set(['orig'])) // stems to play
@@ -125,14 +164,13 @@ export default function StemsView({ demo, matrix, diffs }: { demo: DemoData; mat
   // orig is the master clock (always plays when transport is on; muted if not selected)
   const clock = () => {
     if (!audios.current.orig) {
-      const a = new Audio(STEMS[0].src); a.preload = 'auto'; audios.current.orig = a
+      const a = new Audio(srcOf('orig')); a.preload = 'auto'; audios.current.orig = a
     }
     return audios.current.orig
   }
   const getAudio = (k: string) => {
     if (!audios.current[k]) {
-      const s = STEMS.find((x) => x.k === k)!
-      const a = new Audio(s.src); a.preload = 'auto'; audios.current[k] = a
+      const a = new Audio(srcOf(k)); a.preload = 'auto'; audios.current[k] = a
     }
     return audios.current[k]
   }
@@ -212,14 +250,34 @@ export default function StemsView({ demo, matrix, diffs }: { demo: DemoData; mat
     })
   }
 
+  // Load (or compute) waveform peaks, scoped to the current song. On song change,
+  // stop + drop the cached audio elements and peaks so nothing bleeds across.
   useEffect(() => {
-    fetch(BASE + 'full_peaks.json').then((r) => r.json()).then((p) => { peaks.current = p; redraw(tNow) }).catch(() => {})
+    let cancelled = false
+    Object.values(audios.current).forEach((a) => a.pause())
+    audios.current = {}
+    peaks.current = {}
+    setPlaying(false)
+    if (peaksSrc === null) {
+      // dynamic song: no peaks JSON — decode each stem's audio in the browser
+      for (const s of STEMS) {
+        const url = srcOf(s.k)
+        if (!url) continue
+        computePeaks(url).then((p) => { if (!cancelled) { peaks.current[s.k] = p; redraw(tNow) } }).catch(() => {})
+      }
+    } else {
+      fetch(peaksSrc ?? BASE + 'full_peaks.json')
+        .then((r) => r.json())
+        .then((p) => { if (!cancelled) { peaks.current = p; redraw(tNow) } })
+        .catch(() => {})
+    }
     return () => {
+      cancelled = true
       if (raf.current) cancelAnimationFrame(raf.current)
       Object.values(audios.current).forEach((a) => a.pause())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [songId, peaksSrc])
   useEffect(() => { redraw(tNow) }) // redraw on view/selection/maps change
 
   return (
